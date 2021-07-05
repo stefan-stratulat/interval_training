@@ -8,6 +8,56 @@ GREEN = "#346751"
 BLACK = "#161616"
 FONT_NAME = "Courier"
 
+reps=0
+timer=None
+
+
+def reset_timer():
+    window.after_cancel(timer)
+    canvas.itemconfig(timer_text, text="00:00")
+    timer_label.config(text = "Timer")
+
+
+#-----------------TIMER--------------------------------#
+def start_timer():
+    global reps
+    reps +=1
+    print(f"Reps:{reps}")
+    print(math.floor(reps/2))
+    training_min = int(training_min_input.get())
+    training_sec = int(training_sec_input.get())
+    rest_min = int(rest_min_input.get())
+    rest_sec = int(rest_sec_input.get())
+
+    training_time=training_min*60+training_sec
+    rest_time=rest_min*60+rest_sec
+
+    if reps % 2 == 0:
+        count_down(rest_time)
+        timer_label.config(text = "Break", fg=RED)
+    else:
+        count_down(training_time)
+        timer_label.config(text = "Training", fg=GREEN)
+
+
+def count_down(count):
+    count_min = math.floor(count/ 60)
+    count_sec = count % 60
+    interval_num = int(interval_num_input.get())
+
+    if count_sec < 10:
+        count_sec = "0"+str(count_sec)
+
+    canvas.itemconfig(timer_text, text=f"{count_min}:{count_sec}")
+    if interval_num != (math.floor(reps/2)):
+        if count > 0:
+            global timer
+            timer = window.after(1000, count_down, count-1)
+        else:
+            start_timer()
+    else:
+        timer_label.config(text = "DONE", fg=BLACK)
+
 
 #---------------------UI-----------------------------#
 
@@ -30,7 +80,7 @@ rest_min_label = Label(text="Minutes",bg=ORANGE, fg=BLACK, font=(FONT_NAME, 10, 
 rest_sec_label= Label(text="Seconds",bg=ORANGE, fg=BLACK, font=(FONT_NAME, 10, 'bold'))
 
 #---buttons---#
-start_button = Button(text="Start",font=(FONT_NAME, 10, 'bold'),width=10)
+start_button = Button(text="Start",font=(FONT_NAME, 10, 'bold'),width=10,command=start_timer)
 
 #--input--#
 interval_num_input = Entry(width=5)
