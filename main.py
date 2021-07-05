@@ -22,8 +22,6 @@ def reset_timer():
 def start_timer():
     global reps
     reps +=1
-    print(f"Reps:{reps}")
-    print(math.floor(reps/2))
     training_min = int(training_min_input.get())
     training_sec = int(training_sec_input.get())
     rest_min = int(rest_min_input.get())
@@ -32,7 +30,12 @@ def start_timer():
     training_time=training_min*60+training_sec
     rest_time=rest_min*60+rest_sec
 
-    if reps % 2 == 0:
+    interval_num = int(interval_num_input.get())
+
+    if (math.floor(reps/2)) == interval_num:
+        count_down(rest_time)
+        timer_label.config(text = "LAST ONE", fg=RED)
+    elif reps % 2 == 0:
         count_down(rest_time)
         timer_label.config(text = "Break", fg=RED)
     else:
@@ -55,9 +58,13 @@ def count_down(count):
             timer = window.after(1000, count_down, count-1)
         else:
             start_timer()
+            marks = " "
+            for _ in range(math.floor(reps/2)):
+                marks += "✔"
+            checkmark_label.config(text = marks, fg=GREEN, bg=ORANGE, font=(FONT_NAME,20,'bold'))
     else:
-        timer_label.config(text = "DONE", fg=BLACK)
-
+        if count > 0:
+            timer = window.after(1000, count_down, count-1)
 
 #---------------------UI-----------------------------#
 
@@ -66,11 +73,12 @@ window.title("Interval Training")
 window.config(padx=50,pady=50,bg=ORANGE)
 
 #---canvas---#
-canvas = Canvas(width=200, height=224,bg=ORANGE, highlightthickness=0)
-timer_text = canvas.create_text(100,130,text="00:00",fill=BLACK, font = (FONT_NAME,40,'bold'))
+canvas = Canvas(width=200, height=112,bg=ORANGE, highlightthickness=0)
+timer_text = canvas.create_text(100,70,text="00:00",fill=BLACK, font = (FONT_NAME,40,'bold'))
 
 #----Labels----#
 timer_label= Label(text="Timer",bg=ORANGE, fg=GREEN, font=(FONT_NAME, 30, 'bold'))
+checkmark_label= Label(text="",bg=ORANGE, fg=GREEN, font=(FONT_NAME, 30, 'bold'))
 training_time_label = Label(text="Training time",bg=ORANGE, fg=RED, font=(FONT_NAME, 15, 'bold'))
 rest_time_label = Label(text="Rest time",bg=ORANGE, fg=RED, font=(FONT_NAME, 15, 'bold'))
 interval_num_label = Label(text="Intervals",bg=ORANGE, fg=RED, font=(FONT_NAME, 15, 'bold'))
@@ -98,35 +106,34 @@ rest_sec_input = Entry(width=5)
 timer_label.grid(row=0,column=2)
 
 #row 1
-
-canvas.grid(row=1,column=2)
-
+checkmark_label.grid(row=1,column=2)
 #row 2
-
-start_button.grid(row=2,column=2,columnspan=2,ipadx=20)
-
+canvas.grid(row=2,column=2)
 #row 3
-interval_num_label.grid(row=3,column=2,sticky=W)
-interval_num_input.grid(row=3,column=2,sticky=E,padx=30)
+start_button.grid(row=3,column=2,columnspan=2,ipadx=20)
 
 #row 4
-training_time_label.grid(row=4,column=0,columnspan=2)
-rest_time_label.grid(row=4,column=4,columnspan=2)
+interval_num_label.grid(row=4,column=2,sticky=W)
+interval_num_input.grid(row=4,column=2,sticky=E,padx=30)
 
 #row 5
-training_min_label.grid(row=5,column=0,sticky=E)
-training_min_input.grid(row=5,column=1,sticky=W)
-
-rest_min_label.grid(row=5,column=4,sticky=E)
-rest_min_input.grid(row=5,column=5,sticky=W)
+training_time_label.grid(row=5,column=0,columnspan=2)
+rest_time_label.grid(row=5,column=4,columnspan=2)
 
 #row 6
+training_min_label.grid(row=6,column=0,sticky=E)
+training_min_input.grid(row=6,column=1,sticky=W)
 
-training_sec_label.grid(row=6,column=0,sticky=E)
-training_sec_input.grid(row=6,column=1,sticky=W)
+rest_min_label.grid(row=6,column=4,sticky=E)
+rest_min_input.grid(row=6,column=5,sticky=W)
 
-rest_sec_label.grid(row=6,column=4,sticky=E)
-rest_sec_input.grid(row=6,column=5,sticky=W)
+#row 7
+
+training_sec_label.grid(row=7,column=0,sticky=E)
+training_sec_input.grid(row=7,column=1,sticky=W)
+
+rest_sec_label.grid(row=7,column=4,sticky=E)
+rest_sec_input.grid(row=7,column=5,sticky=W)
 
 
 window.mainloop()
