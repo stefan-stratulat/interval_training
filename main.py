@@ -36,8 +36,8 @@ def start_timer():
     engine = pyttsx3.init()
     if (math.floor(reps/2)) == interval_num:
         count_down(rest_time)
-        timer_label.config(text = "LAST ONE", fg=RED)
-        engine.say("Last one")
+        timer_label.config(text = "LAST BREAK", fg=RED)
+        engine.say("Good Job")
         engine.runAndWait()
     elif reps % 2 == 0:
         count_down(rest_time)
