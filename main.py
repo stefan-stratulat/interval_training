@@ -1,5 +1,6 @@
 from tkinter import *
 import math
+import pyttsx3
 
 #------------------CONSTANTS--------------------------#
 ORANGE = "#ECDBBA"
@@ -10,7 +11,6 @@ FONT_NAME = "Courier"
 
 reps=0
 timer=None
-
 
 def reset_timer():
     window.after_cancel(timer)
@@ -32,15 +32,23 @@ def start_timer():
 
     interval_num = int(interval_num_input.get())
 
+
+    engine = pyttsx3.init()
     if (math.floor(reps/2)) == interval_num:
         count_down(rest_time)
         timer_label.config(text = "LAST ONE", fg=RED)
+        engine.say("Last one")
+        engine.runAndWait()
     elif reps % 2 == 0:
         count_down(rest_time)
         timer_label.config(text = "Break", fg=RED)
+        engine.say("Break")
+        engine.runAndWait()
     else:
         count_down(training_time)
         timer_label.config(text = "Training", fg=GREEN)
+        engine.say("Train")
+        engine.runAndWait()
 
 
 def count_down(count):
